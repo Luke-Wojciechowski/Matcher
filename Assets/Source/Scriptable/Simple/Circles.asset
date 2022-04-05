@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b54be0be8374fb438623a5f5d31a408, type: 3}
+  m_Name: Circles
+  m_EditorClassIdentifier: 
+  _levelToUnlockNewSprites: 0
+  _sprites:
+  - {fileID: 9146462850580041804, guid: e849aef52a358c049aae7b1a179fe4a7, type: 3}
+  - {fileID: 5626681944649799198, guid: 9f6e8c91c39c965488edd2514701c695, type: 3}
+  - {fileID: 5065913537597185160, guid: 55b01f63fc115ff49aa8ff07250e2820, type: 3}
+  - {fileID: 5359941725861941967, guid: 7ed3813bb991d214da46e3cb66b091b5, type: 3}
