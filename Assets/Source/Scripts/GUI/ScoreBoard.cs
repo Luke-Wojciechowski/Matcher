@@ -16,13 +16,12 @@ namespace Source.Scripts
 
         private void OnEnable()
         {
-            Score.OnScoreChange += ModifyCurrentDisplayedScore;
-            _text.text = "0";
+            Timer.OnTick += ModifyCurrentDisplayedScore;
         }
 
         private void OnDisable()
         {
-            Score.OnScoreChange -= ModifyCurrentDisplayedScore;
+            Timer.OnTick -= ModifyCurrentDisplayedScore;
         }
 
         private void ModifyCurrentDisplayedScore()

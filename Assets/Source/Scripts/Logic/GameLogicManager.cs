@@ -7,15 +7,13 @@ namespace Ingame
 {
     public sealed class GameLogicManager : MonoSingleton<GameLogicManager>
     {
-
-        public bool BlockScore = false; 
         public static event Action OnStartGame; 
         public static event Action OnCharacterAppear;
         
         private List<SpriteRenderer> _matches = new List<SpriteRenderer>();
         private List<SpriteRenderer> _all = new List<SpriteRenderer>();
         private SpriteRenderer _current;
-        private bool s = true;
+        private bool _blockScore = false;
         public SpriteRenderer CurrentSprite => _current;
         protected override void AwakeAfter()
         {
@@ -23,14 +21,13 @@ namespace Ingame
             _all = CharacterManager.Instance.GetSimplifyList();
         }
 
-        public void Reset()
-        {
-            OnStartGame?.Invoke();
-        }
+
         private void OnEnable()
         {
-            InputManager.OnSlideLeft += RejectSoldier;
-            InputManager.OnSlideRight += AcceptSoldier;
+            InputManager.OnSlideLeft += RejectFigure;
+            InputManager.OnSlideRight += AcceptFigure;
+            Timer.OnTick += PerformNonBlocking;
+            Timer.OnTimeOut += PerformBlocking;
             
             OnCharacterAppear += AdjustCurrentSpriteRenderer;
             OnStartGame += OnCharacterAppear;
@@ -40,51 +37,45 @@ namespace Ingame
 
         private void OnDisable()
         {
-            InputManager.OnSlideLeft -= RejectSoldier;
-            InputManager.OnSlideRight -= AcceptSoldier;
+            InputManager.OnSlideLeft -= RejectFigure;
+            InputManager.OnSlideRight -= AcceptFigure;
+            Timer.OnTick -= PerformNonBlocking;
+            Timer.OnTimeOut -= PerformBlocking;
             
             OnCharacterAppear -= AdjustCurrentSpriteRenderer;
             OnStartGame -= OnCharacterAppear;
             OnStartGame -= ResetMatches;
         }
 
-        private void RejectSoldier()
+        private void RejectFigure()
         {     
-            if (BlockScore)
+            ModifyScoreOnFigure(true);
+        }
+
+        private void AcceptFigure()
+        {
+            ModifyScoreOnFigure();
+        }
+
+        private void ModifyScoreOnFigure(bool reversed = false)
+        {
+            if (_blockScore)
             {
                 return;
             }
             var result = CheckIfSpriteBelongsToSelectedSprites();
+            result = !reversed ? result : !result;
             if (result)
             {
-                Score.Instance.Decrease();
+                Score.Instance.Increase();
             }
             else
             {
-                Score.Instance.Increase();
+                Score.Instance.Decrease();
             }
             OnCharacterAppear?.Invoke();
         }
-
-        private void AcceptSoldier()
-        {         
-            if (BlockScore)
-            {
-                return;
-            }
-            var result = CheckIfSpriteBelongsToSelectedSprites();
-            if (result)
-            {
-                Score.Instance.Increase();
-            }
-            else
-            {
-                Score.Instance.Decrease();
-            }OnCharacterAppear?.Invoke();
-        }
-        
-
-        public void ResetMatches()
+        private void ResetMatches()
         {
             _matches = new List<SpriteRenderer>();
         }
@@ -103,7 +94,14 @@ namespace Ingame
             }
             return false;
         }
-
+        private void PerformNonBlocking()
+        {
+            _blockScore = false;
+        }
+        private void PerformBlocking()
+        {
+            _blockScore = true;
+        }
         private void AdjustCurrentSpriteRenderer()
         {
             _current = CharacterManager.GetRandom(_all);
@@ -117,6 +115,10 @@ namespace Ingame
             }
             _matches.Add(r);
         }
- 
+        public void Reset()
+        {
+            OnStartGame?.Invoke();
+        }
+        
     }
 }

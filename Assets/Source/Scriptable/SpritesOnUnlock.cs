@@ -7,10 +7,7 @@ namespace Ingame
     [CreateAssetMenu(fileName = "SpritesOnUnlock",menuName = "Ingame/SpritesOnUnlock")]
     public class SpritesOnUnlock : ScriptableObject
     {
-        [SerializeField] private int _levelToUnlockNewSprites;
         [SerializeField] private List<SpriteRenderer> _sprites;
-
-        public int LevelToUnlockNewSprites => _levelToUnlockNewSprites;
         public List<SpriteRenderer> Sprites => _sprites;
     }
 }
